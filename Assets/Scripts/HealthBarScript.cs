@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +6,7 @@ public class HealthBarScript : MonoBehaviour
 {
     public Slider healthSlider;
     public Slider easeHealthSlider;
+    public bool isAlwaysEnabled = true;
     private float currentHealth = 1f;
     private float lerpSpeed = 0.01f;
     private float lastHitTime = 0f;
@@ -31,7 +31,7 @@ public class HealthBarScript : MonoBehaviour
             currentHealth -= 0.1f;
         }
 
-        if (Time.time - lastHitTime <= visibleDuration)
+        if (Time.time - lastHitTime <= visibleDuration || isAlwaysEnabled)
         {
             ToggleVisibility(true);  // Показываем
         }

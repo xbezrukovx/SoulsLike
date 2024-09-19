@@ -514,6 +514,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthSlider: {fileID: 7864193826753852432}
   easeHealthSlider: {fileID: 2059184348668187250}
+  isAlwaysEnabled: 0
 --- !u!114 &2026204575861887371
 MonoBehaviour:
   m_ObjectHideFlags: 0
