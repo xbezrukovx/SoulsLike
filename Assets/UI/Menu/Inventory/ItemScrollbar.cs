@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using Debug = System.Diagnostics.Debug;
 
 public class ItemScrollbar : MonoBehaviour
 {
     public GameObject contentView;  // Контейнер для элементов инвентаря
+    public GameObject emptyPrefab;
     private int _itemCount;      // Общее количество элементов в инвентаре
-    public GameObject cursor;
     
     private Scrollbar _scrollbar;
     private RectTransform _contentRect;
@@ -20,12 +23,35 @@ public class ItemScrollbar : MonoBehaviour
     private float _minVisibleSpace = 0;
     private float _maxVisibleSpace = 0;
     private float _currentHeight = 0;
+    private List<Image> _items;
     
     void Start()
     {
         _scrollbar = GetComponent<Scrollbar>();
         _contentRect = contentView.GetComponent<RectTransform>();
+        _items = contentView.GetComponentInChildren<Transform>(true)
+            .transform.Cast<Transform>()  // Преобразуем Transform в IEnumerable
+            .Select(t =>
+            {
+                var color = Color.black;
+                color.a = 0;
+                var image = t.AddComponent<Image>();
+                image.color = color;
+                return image;
+            })    // Получаем GameObject
+            .ToList();
         _itemCount = _contentRect.childCount;
+
+        if (_itemCount != 0)
+        {
+            var color = Color.black;
+            color.a = 0.5f;
+            _items[_selectedIndex - 1].color = color;
+        }
+        else
+        {
+            Instantiate(emptyPrefab, contentView.transform);
+        }
     }
 
     public void OnSelectDown()
@@ -58,6 +84,17 @@ public class ItemScrollbar : MonoBehaviour
         }
         
         _currentHeight = _selectedIndex * _itemHeight;
+        
+        _items.ForEach(i =>
+        {
+            var color = Color.black;
+            color.a = 0;
+            i.color = color;
+        });
+        
+        var color = Color.black;
+        color.a = 0.5f;
+        _items[_selectedIndex - 1].color = color;
         
         var downDiff = _currentHeight - _maxVisibleSpace;
         var upDiff = _minVisibleSpace - _currentHeight + _itemHeight;
