@@ -7,6 +7,8 @@ public class CharacterMovement : MonoBehaviour
     public CharacterController characterController;
     public Camera cam;
     public float speed = 6f;
+    
+    
     private float gravitySpeed = 9.81f;
     private Animator animator;
     private Transform playerTransform;

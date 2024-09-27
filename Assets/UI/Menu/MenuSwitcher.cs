@@ -23,6 +23,7 @@ public class MenuSwitcher : MonoBehaviour
     {
         _rectTransform = selector.GetComponent<RectTransform>();
         ChangeItemColors(menuItems[currentItem]);
+        StartCoroutine(MoveSelector(0));
     }
 
     void OnLeft()
