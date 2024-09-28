@@ -11,6 +11,8 @@ public class ItemScrollbar : MonoBehaviour
     public GameObject contentView;  // Контейнер для элементов инвентаря
     public GameObject emptyPrefab;
     private int _itemCount;      // Общее количество элементов в инвентаре
+    public GameObject monitor;
+    public GameObject modalWindow;
     
     private Scrollbar _scrollbar;
     private RectTransform _contentRect;
@@ -24,11 +26,14 @@ public class ItemScrollbar : MonoBehaviour
     private float _maxVisibleSpace = 0;
     private float _currentHeight = 0;
     private List<Image> _items;
+    private ModalScript _modalScript;
     
     void Start()
     {
+        modalWindow.SetActive(false);
         _scrollbar = GetComponent<Scrollbar>();
         _contentRect = contentView.GetComponent<RectTransform>();
+        _modalScript = monitor.GetComponent<ModalScript>();
         _items = contentView.GetComponentInChildren<Transform>(true)
             .transform.Cast<Transform>()  // Преобразуем Transform в IEnumerable
             .Select(t =>
@@ -56,6 +61,7 @@ public class ItemScrollbar : MonoBehaviour
 
     public void OnSelectDown()
     {
+        if (_modalScript.IsActive()) return;
         if (_selectedIndex < _itemCount)  // Если индекс меньше количества элементов
         {
             _selectedIndex++;  // Переходим к следующему элементу
@@ -65,11 +71,18 @@ public class ItemScrollbar : MonoBehaviour
 
     public void OnSelectUp()
     {
+        if (_modalScript.IsActive()) return;
         if (_selectedIndex > 1)  // Если индекс больше 0
         {
             _selectedIndex--;  // Переходим к предыдущему элементу
             Move();
         }
+    }
+
+    void OnEnter()
+    {
+        modalWindow.SetActive(true);
+        modalWindow.GetComponent<ModalSelectorScript>().IndexItem = _selectedIndex - 1;
     }
 
     private void Move()
