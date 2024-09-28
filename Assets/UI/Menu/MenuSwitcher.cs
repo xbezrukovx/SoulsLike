@@ -12,11 +12,13 @@ public class MenuSwitcher : MonoBehaviour
     public GameObject selector;
     public GameObject[] inventoryItems;
     public GameObject[] equipmentItems;
+    public GameObject monitor;
     
     private int currentItem = 1;
     private RectTransform _rectTransform;
     private static readonly object lockObject = new object();
     private bool isMoving = false; // Флаг для отслеживания состояния перемещения
+    private ModalScript _modalScript;  
     
     // Start is called before the first frame update
     void Start()
@@ -24,10 +26,12 @@ public class MenuSwitcher : MonoBehaviour
         _rectTransform = selector.GetComponent<RectTransform>();
         ChangeItemColors(menuItems[currentItem]);
         StartCoroutine(MoveSelector(0));
+        _modalScript = monitor.GetComponent<ModalScript>();
     }
 
     void OnLeft()
     {
+        if (_modalScript.IsActive()) return;
         if (Monitor.TryEnter(lockObject) && currentItem > 0 && !isMoving)
         {
             var menuItem = menuItems[currentItem-1];
@@ -44,6 +48,7 @@ public class MenuSwitcher : MonoBehaviour
 
     void OnRight()
     {
+        if (_modalScript.IsActive()) return;
         if (Monitor.TryEnter(lockObject) && currentItem < menuItems.Length - 1 && !isMoving)
         {
             var menuItem = menuItems[currentItem+1];
