@@ -11,6 +11,7 @@ public class EquipmentScript : MonoBehaviour
     public GameObject[] slots;
     public GameObject selector;
     public GameObject monitor;
+    public GameObject modal;
     
     private GameObject[][] matrix;
     private int _specialX = 1;
@@ -18,14 +19,13 @@ public class EquipmentScript : MonoBehaviour
     private int _pointerX;
     private int _pointerY;
     
-    private Gamepad _gamepad;
     private RectTransform _rectTransform;
     private ModalScript _modalScript;
     
     // Start is called before the first frame update
     void Start()
     {
-        _gamepad = Gamepad.current;
+        modal.SetActive(false);
         _modalScript = monitor.GetComponent<ModalScript>();
         
         matrix = new GameObject[2][];
@@ -44,7 +44,7 @@ public class EquipmentScript : MonoBehaviour
 
     void OnSelectRight()
     {
-        if (_modalScript.IsActive()) return;
+        if (monitor.GetComponent<ModalScript>().IsActive()) return;
         if (_pointerX < matrix[_pointerY].Length - 1)
         {
             Debug.Log("Right");
@@ -59,7 +59,7 @@ public class EquipmentScript : MonoBehaviour
     
     void OnSelectLeft()
     {
-        if (_modalScript.IsActive()) return;
+        if (monitor.GetComponent<ModalScript>().IsActive()) return;
         if (_pointerX > 0)
         {
             Debug.Log("Left");
@@ -74,7 +74,7 @@ public class EquipmentScript : MonoBehaviour
     
     void OnSelectUp()
     {
-        if (_modalScript.IsActive()) return;
+        if (monitor.GetComponent<ModalScript>().IsActive()) return;
         if (_pointerY > 0)
         {
             Debug.Log("Up");
@@ -85,7 +85,7 @@ public class EquipmentScript : MonoBehaviour
     
     void OnSelectDown()
     {
-        if (_modalScript.IsActive()) return;
+        if (monitor.GetComponent<ModalScript>().IsActive()) return;
         if (_pointerY < matrix.Length - 1)
         {
             Debug.Log("Down");
@@ -97,10 +97,13 @@ public class EquipmentScript : MonoBehaviour
             MoveSelector(_pointerX, _pointerY);
         }
     }
-    
-    // Update is called once per frame
-    void Update()
+
+    void OnEnter()
     {
+        var mutex = monitor.GetComponent<ModalScript>();
+        if (mutex.IsActive()) return;
+        modal.SetActive(true);
+        mutex.Activate();
     }
 
     private void MoveSelector(int x, int y)

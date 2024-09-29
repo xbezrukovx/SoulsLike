@@ -4,18 +4,16 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using Debug = System.Diagnostics.Debug;
 
-public class ItemScrollbar : MonoBehaviour
+public class ItemScrollableModal : MonoBehaviour
 {
     public GameObject contentView;  // Контейнер для элементов инвентаря
     public GameObject emptyPrefab;
     private int _itemCount;      // Общее количество элементов в инвентаре
     public GameObject monitor;
     public GameObject modalWindow;
-    public bool isIgnoreMutex;
-    public GameObject parent;
     
+    private Scrollbar _scrollbar;
     private RectTransform _contentRect;
     private float _itemHeight;      // Высота одного элемента
     private float _contentHeight;   // Высота всего контента
@@ -27,15 +25,14 @@ public class ItemScrollbar : MonoBehaviour
     private float _maxVisibleSpace = 0;
     private float _currentHeight = 0;
     private List<Image> _items;
+    private ModalScript _modalScript;
     
     void Start()
     {
-        if (modalWindow != null)
-        {
-            modalWindow.SetActive(false);
-        }
-        
+        modalWindow.SetActive(false);
+        _scrollbar = GetComponent<Scrollbar>();
         _contentRect = contentView.GetComponent<RectTransform>();
+        _modalScript = monitor.GetComponent<ModalScript>();
         _items = contentView.GetComponentInChildren<Transform>(true)
             .transform.Cast<Transform>()  // Преобразуем Transform в IEnumerable
             .Select(t =>
@@ -63,8 +60,8 @@ public class ItemScrollbar : MonoBehaviour
 
     public void OnSelectDown()
     {
-        if (monitor.GetComponent<ModalScript>().IsActive() && !isIgnoreMutex) return;
-        if (_selectedIndex <  contentView.GetComponent<RectTransform>().childCount)  // Если индекс меньше количества элементов
+        if (_modalScript.IsActive()) return;
+        if (_selectedIndex < _itemCount)  // Если индекс меньше количества элементов
         {
             _selectedIndex++;  // Переходим к следующему элементу
             Move();
@@ -73,7 +70,7 @@ public class ItemScrollbar : MonoBehaviour
 
     public void OnSelectUp()
     {
-        if (monitor.GetComponent<ModalScript>().IsActive() && !isIgnoreMutex) return;
+        if (_modalScript.IsActive()) return;
         if (_selectedIndex > 1)  // Если индекс больше 0
         {
             _selectedIndex--;  // Переходим к предыдущему элементу
@@ -83,21 +80,13 @@ public class ItemScrollbar : MonoBehaviour
 
     void OnEnter()
     {
-        if (modalWindow == null) return;
         modalWindow.SetActive(true);
         modalWindow.GetComponent<ModalSelectorScript>().IndexItem = _selectedIndex - 1;
     }
 
-    void OnBack()
-    {
-        if (modalWindow != null) return;
-        monitor.GetComponent<ModalScript>().Deactivate();
-        parent.SetActive(false);
-    }
-
     private void Move()
     {
-        _visibleSpace = GetComponent<Scrollbar>().GetComponent<RectTransform>().rect.height;
+        _visibleSpace = _scrollbar.GetComponent<RectTransform>().rect.height;
         _contentHeight = contentView.GetComponent<RectTransform>().rect.height;
         _itemHeight = _contentHeight / _itemCount;
         if (_maxVisibleSpace == 0)
@@ -125,7 +114,7 @@ public class ItemScrollbar : MonoBehaviour
         if (downDiff > 0)
         {
             var percent = 1 - (_currentHeight - _visibleSpace) / _hiddenHeight;
-            GetComponent<Scrollbar>().value = percent;
+            _scrollbar.value = percent;
             _minVisibleSpace += downDiff;
             _maxVisibleSpace += downDiff;
             return;
@@ -134,11 +123,10 @@ public class ItemScrollbar : MonoBehaviour
         if (upDiff > 0)
         {
             var percent = 1 - (_currentHeight - _itemHeight) / _hiddenHeight;
-            GetComponent<Scrollbar>().value = percent;
+            _scrollbar.value = percent;
             _minVisibleSpace -= upDiff;
             _maxVisibleSpace -= upDiff;
         }
         
     }
-    
 }
