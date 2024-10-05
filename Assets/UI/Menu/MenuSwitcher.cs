@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using UI.Menu;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +14,7 @@ public class MenuSwitcher : MonoBehaviour
     public GameObject selector;
     public GameObject[] inventoryItems;
     public GameObject[] equipmentItems;
+    public GameObject[] optionsItems;
     public GameObject monitor;
     
     private int currentItem = 1;
@@ -20,13 +23,19 @@ public class MenuSwitcher : MonoBehaviour
     private bool isMoving = false; // Флаг для отслеживания состояния перемещения
     private ModalScript _modalScript;  
     
-    // Start is called before the first frame update
     void Start()
     {
-        _rectTransform = selector.GetComponent<RectTransform>();
+        if (selector != null)
+        {
+            _rectTransform = selector.GetComponent<RectTransform>();
+        }
         ChangeItemColors(menuItems[currentItem]);
-        StartCoroutine(MoveSelector(0));
         _modalScript = monitor.GetComponent<ModalScript>();
+    }
+
+    private void OnRenderObject()
+    {
+        OpenWindow();
     }
 
     void OnLeft()
@@ -104,7 +113,14 @@ public class MenuSwitcher : MonoBehaviour
         _rectTransform.position = endPos;
 
         isMoving = false; // Перемещение завершено
+        OpenWindow();
+        
+        // Освобождаем блокировку
+        Monitor.Exit(lockObject);
+    }
 
+    private void OpenWindow()
+    {
         if (currentItem == 1)
         {
             foreach (var item in inventoryItems)
@@ -114,6 +130,15 @@ public class MenuSwitcher : MonoBehaviour
             foreach (var item in equipmentItems)
             {
                 item.SetActive(true);
+                var postInit = item.GetComponentInChildren<PostInit>();
+                if (postInit != null)
+                {
+                    postInit.PostInit();
+                }
+            }
+            foreach (var item in optionsItems)
+            {
+                item.SetActive(false);
             }
         }
         if (currentItem == 0)
@@ -126,10 +151,26 @@ public class MenuSwitcher : MonoBehaviour
             {
                 item.SetActive(false);
             }
+            foreach (var item in optionsItems)
+            {
+                item.SetActive(false);
+            }
         }
-
-        // Освобождаем блокировку
-        Monitor.Exit(lockObject);
+        if (currentItem == 2)
+        {
+            foreach (var item in optionsItems)
+            {
+                item.SetActive(true);
+            }
+            foreach (var item in equipmentItems)
+            {
+                item.SetActive(false);
+            }
+            foreach (var item in inventoryItems)
+            {
+                item.SetActive(false);
+            }
+        }
     }
     
 }

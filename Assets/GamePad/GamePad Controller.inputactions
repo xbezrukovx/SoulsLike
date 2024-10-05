@@ -176,6 +176,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "In-Game",
+            "id": "311002ae-9e86-4676-977b-2cc5a9869794",
+            "actions": [
+                {
+                    "name": "OpenMenu",
+                    "type": "Button",
+                    "id": "45199dc9-3995-4063-89b5-baab92be9440",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "98559a94-bdd8-4030-9ffe-58500bc196c2",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
