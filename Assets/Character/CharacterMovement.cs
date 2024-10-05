@@ -15,7 +15,7 @@ public class CharacterMovement : MonoBehaviour
     private bool isMovementEnalbed = true;
 
     void Start() {
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
         playerTransform = GetComponent<Transform>();
     }
     

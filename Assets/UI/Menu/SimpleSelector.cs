@@ -6,22 +6,24 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ModalSelectorScript : MonoBehaviour
+public class SimpleSelector : MonoBehaviour
 {
     public GameObject contentView;  // Контейнер для элементов инвентаря
-    public GameObject monitor;
     public Color selectedColor;
     
     private int _itemCount;
     private int _selectedIndex = 1; // Индекс выбранного элемента
-    private ModalScript _modalScript;
     private List<Image> _items;
 
+    public int GetSelectedIndex()
+    {
+        return _selectedIndex;
+    }
+
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         var rect = contentView.GetComponent<Transform>();
-        _modalScript = monitor.GetComponent<ModalScript>();
         _itemCount = rect.childCount;
         
         _items = rect
@@ -29,7 +31,8 @@ public class ModalSelectorScript : MonoBehaviour
                 .Select(t =>
                 {
                     selectedColor.a = 0;
-                    var image = t.AddComponent<Image>();
+                    t.AddComponent<Image>();
+                    var image = t.GetComponent<Image>();
                     image.color = selectedColor;
                     return image;
                 })    // Получаем GameObject
@@ -41,20 +44,6 @@ public class ModalSelectorScript : MonoBehaviour
             color.a = 0.5f;
             _items[_selectedIndex - 1].color = color;
         }
-    }
-
-    void OnBack()
-    {
-        _modalScript.Deactivate();
-        gameObject.SetActive(false);
-    }
-
-    void OnEnter()
-    {
-        _modalScript.Deactivate();
-        Debug.Log("Выбранное действие: " + _selectedIndex);
-        Debug.Log("Выбранный предмет: " + IndexItem);
-        gameObject.SetActive(false);
     }
 
     public void OnSelectDown()

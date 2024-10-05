@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using UI.Menu;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class EquipmentScript : MonoBehaviour
+public class EquipmentScript : MonoBehaviour, PostInit
 {
     
     public GameObject[] slots;
@@ -23,7 +24,7 @@ public class EquipmentScript : MonoBehaviour
     private ModalScript _modalScript;
     
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         modal.SetActive(false);
         _modalScript = monitor.GetComponent<ModalScript>();
@@ -37,17 +38,20 @@ public class EquipmentScript : MonoBehaviour
         matrix[0][3] = slots[3];
         matrix[1][0] = slots[4];
         matrix[1][2] = slots[5];
-        
+    }
+
+    public void PostInit()
+    {
         _rectTransform = selector.GetComponent<RectTransform>();
         MoveSelector(_pointerX, _pointerY);
     }
+
 
     void OnSelectRight()
     {
         if (monitor.GetComponent<ModalScript>().IsActive()) return;
         if (_pointerX < matrix[_pointerY].Length - 1)
         {
-            Debug.Log("Right");
             _pointerX++;
             if (_pointerX == _specialX && _pointerY == _specialY)
             {
@@ -62,7 +66,6 @@ public class EquipmentScript : MonoBehaviour
         if (monitor.GetComponent<ModalScript>().IsActive()) return;
         if (_pointerX > 0)
         {
-            Debug.Log("Left");
             _pointerX--;
             if (_pointerX == _specialX && _pointerY == _specialY)
             {
@@ -77,7 +80,6 @@ public class EquipmentScript : MonoBehaviour
         if (monitor.GetComponent<ModalScript>().IsActive()) return;
         if (_pointerY > 0)
         {
-            Debug.Log("Up");
             _pointerY--;
             MoveSelector(_pointerX, _pointerY);
         }
@@ -88,7 +90,6 @@ public class EquipmentScript : MonoBehaviour
         if (monitor.GetComponent<ModalScript>().IsActive()) return;
         if (_pointerY < matrix.Length - 1)
         {
-            Debug.Log("Down");
             _pointerY++;
             if (_pointerX == _specialX && _pointerY == _specialY)
             {
@@ -100,18 +101,14 @@ public class EquipmentScript : MonoBehaviour
 
     void OnEnter()
     {
-        var mutex = monitor.GetComponent<ModalScript>();
-        if (mutex.IsActive()) return;
+        if (_modalScript.IsActive()) return;
         modal.SetActive(true);
-        mutex.Activate();
+        _modalScript.Activate();
     }
 
     private void MoveSelector(int x, int y)
     {
-        Debug.Log("x:" + x + "y:" + y);
-        
         Vector3 endPos = matrix[y][x].transform.position;
-        // Устанавливаем точное конечное положение
         _rectTransform.position = endPos;
     }
 }

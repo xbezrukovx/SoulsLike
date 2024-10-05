@@ -84,6 +84,7 @@ public class ItemScrollbar : MonoBehaviour
     void OnEnter()
     {
         if (modalWindow == null) return;
+        monitor.GetComponent<ModalScript>().Activate();
         modalWindow.SetActive(true);
         modalWindow.GetComponent<ModalSelectorScript>().IndexItem = _selectedIndex - 1;
     }
