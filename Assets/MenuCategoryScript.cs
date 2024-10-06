@@ -31,15 +31,6 @@ public class MenuCategoryScript : MonoBehaviour
         _descriptionText = transform.Find("CategoryOption").Find("TextOption").GetComponent<TextMeshProUGUI>();
         
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            SetCategory(Random.Range(0, 3));
-        }
-    }
     
     public void SetCategory(int category) {
         if (category == 0)
