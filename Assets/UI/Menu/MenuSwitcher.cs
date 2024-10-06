@@ -16,6 +16,7 @@ public class MenuSwitcher : MonoBehaviour
     public GameObject[] equipmentItems;
     public GameObject[] optionsItems;
     public GameObject monitor;
+    public MenuCategoryScript menuScript;
     
     private int currentItem = 1;
     private RectTransform _rectTransform;
@@ -123,6 +124,7 @@ public class MenuSwitcher : MonoBehaviour
     {
         if (currentItem == 1)
         {
+            menuScript.SetCategory(1);
             foreach (var item in inventoryItems)
             {
                 item.SetActive(false);
@@ -143,6 +145,7 @@ public class MenuSwitcher : MonoBehaviour
         }
         if (currentItem == 0)
         {
+            menuScript.SetCategory(0);
             foreach (var item in inventoryItems)
             {
                 item.SetActive(true);
@@ -158,6 +161,7 @@ public class MenuSwitcher : MonoBehaviour
         }
         if (currentItem == 2)
         {
+            menuScript.SetCategory(2);
             foreach (var item in optionsItems)
             {
                 item.SetActive(true);
