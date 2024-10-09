@@ -17,6 +17,7 @@ public class MenuSwitcher : MonoBehaviour
     public GameObject[] optionsItems;
     public GameObject monitor;
     public MenuCategoryScript menuScript;
+    public BlockAdviceButtons blockAdviceButtons;
     
     private int currentItem = 1;
     private RectTransform _rectTransform;
@@ -34,8 +35,9 @@ public class MenuSwitcher : MonoBehaviour
         _modalScript = monitor.GetComponent<ModalScript>();
     }
 
-    private void OnRenderObject()
+    private void OnEnable()
     {
+        Canvas.ForceUpdateCanvases();
         OpenWindow();
     }
 
@@ -122,8 +124,12 @@ public class MenuSwitcher : MonoBehaviour
 
     private void OpenWindow()
     {
+        List<BlockAdviceButtons.AdviceType> adviceTypes = new List<BlockAdviceButtons.AdviceType>();
         if (currentItem == 1)
         {
+            adviceTypes.Add(BlockAdviceButtons.AdviceType.SELECT);
+            adviceTypes.Add(BlockAdviceButtons.AdviceType.ENTER);
+            adviceTypes.Add(BlockAdviceButtons.AdviceType.UNEQUIP);
             menuScript.SetCategory(1);
             foreach (var item in inventoryItems)
             {
@@ -146,6 +152,8 @@ public class MenuSwitcher : MonoBehaviour
         if (currentItem == 0)
         {
             menuScript.SetCategory(0);
+            adviceTypes.Add(BlockAdviceButtons.AdviceType.SELECT);
+            adviceTypes.Add(BlockAdviceButtons.AdviceType.ENTER);
             foreach (var item in inventoryItems)
             {
                 item.SetActive(true);
@@ -161,6 +169,8 @@ public class MenuSwitcher : MonoBehaviour
         }
         if (currentItem == 2)
         {
+            adviceTypes.Add(BlockAdviceButtons.AdviceType.SELECT);
+            adviceTypes.Add(BlockAdviceButtons.AdviceType.ENTER);
             menuScript.SetCategory(2);
             foreach (var item in optionsItems)
             {
@@ -175,6 +185,7 @@ public class MenuSwitcher : MonoBehaviour
                 item.SetActive(false);
             }
         }
+        blockAdviceButtons.ShowAdvice(adviceTypes);
     }
     
 }

@@ -29,7 +29,6 @@ public class MenuCategoryScript : MonoBehaviour
         _image = transform.Find("CategoryImage").GetComponent<RawImage>();
         _titleText = transform.Find("CategoryTitle").Find("TextCategory").GetComponent<TextMeshProUGUI>();
         _descriptionText = transform.Find("CategoryOption").Find("TextOption").GetComponent<TextMeshProUGUI>();
-        
     }
     
     public void SetCategory(int category) {
@@ -41,6 +40,9 @@ public class MenuCategoryScript : MonoBehaviour
         }
         if (category == 1)
         {
+            _image = transform.Find("CategoryImage").GetComponent<RawImage>();
+            _titleText = transform.Find("CategoryTitle").Find("TextCategory").GetComponent<TextMeshProUGUI>();
+            _descriptionText = transform.Find("CategoryOption").Find("TextOption").GetComponent<TextMeshProUGUI>();
             _image.texture = EquipmentImg;
             _titleText.text = equipmentTitle;
             _descriptionText.text = equipmentDescription;
