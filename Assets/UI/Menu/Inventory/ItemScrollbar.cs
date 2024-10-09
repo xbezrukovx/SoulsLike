@@ -15,6 +15,7 @@ public class ItemScrollbar : MonoBehaviour
     public GameObject modalWindow;
     public bool isIgnoreMutex;
     public GameObject parent;
+    public BlockAdviceButtons BlockAdviceButtons;
     
     private RectTransform _contentRect;
     private float _itemHeight;      // Высота одного элемента
@@ -86,6 +87,11 @@ public class ItemScrollbar : MonoBehaviour
         if (modalWindow == null) return;
         monitor.GetComponent<ModalScript>().Activate();
         modalWindow.SetActive(true);
+        List<BlockAdviceButtons.AdviceType> adviceTypes = new List<BlockAdviceButtons.AdviceType>();
+        adviceTypes.Add(BlockAdviceButtons.AdviceType.SELECT);
+        adviceTypes.Add(BlockAdviceButtons.AdviceType.ENTER);
+        adviceTypes.Add(BlockAdviceButtons.AdviceType.BACK);
+        BlockAdviceButtons.ShowAdvice(adviceTypes);
         modalWindow.GetComponent<ModalSelectorScript>().IndexItem = _selectedIndex - 1;
     }
 
@@ -93,6 +99,14 @@ public class ItemScrollbar : MonoBehaviour
     {
         if (modalWindow != null) return;
         monitor.GetComponent<ModalScript>().Deactivate();
+        List<BlockAdviceButtons.AdviceType> adviceTypes = new List<BlockAdviceButtons.AdviceType>();
+        adviceTypes.Add(BlockAdviceButtons.AdviceType.SELECT);
+        adviceTypes.Add(BlockAdviceButtons.AdviceType.ENTER);
+        if (parent != null)
+        {
+            adviceTypes.Add(BlockAdviceButtons.AdviceType.UNEQUIP);
+        }
+        BlockAdviceButtons.ShowAdvice(adviceTypes);
         parent.SetActive(false);
     }
 

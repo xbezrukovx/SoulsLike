@@ -11,6 +11,7 @@ public class ModalSelectorScript : MonoBehaviour
     public GameObject contentView;  // Контейнер для элементов инвентаря
     public GameObject monitor;
     public Color selectedColor;
+    public BlockAdviceButtons BlockAdviceButtons;
     
     private int _itemCount;
     private int _selectedIndex = 1; // Индекс выбранного элемента
@@ -47,11 +48,19 @@ public class ModalSelectorScript : MonoBehaviour
     {
         _modalScript.Deactivate();
         gameObject.SetActive(false);
+        List<BlockAdviceButtons.AdviceType> adviceTypes = new List<BlockAdviceButtons.AdviceType>();
+        adviceTypes.Add(BlockAdviceButtons.AdviceType.SELECT);
+        adviceTypes.Add(BlockAdviceButtons.AdviceType.ENTER);
+        BlockAdviceButtons.ShowAdvice(adviceTypes);
     }
 
     void OnEnter()
     {
         _modalScript.Deactivate();
+        List<BlockAdviceButtons.AdviceType> adviceTypes = new List<BlockAdviceButtons.AdviceType>();
+        adviceTypes.Add(BlockAdviceButtons.AdviceType.SELECT);
+        adviceTypes.Add(BlockAdviceButtons.AdviceType.ENTER);
+        BlockAdviceButtons.ShowAdvice(adviceTypes);
         Debug.Log("Выбранное действие: " + _selectedIndex);
         Debug.Log("Выбранный предмет: " + IndexItem);
         gameObject.SetActive(false);

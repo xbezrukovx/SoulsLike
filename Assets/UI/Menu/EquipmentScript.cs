@@ -13,6 +13,7 @@ public class EquipmentScript : MonoBehaviour, PostInit
     public GameObject selector;
     public GameObject monitor;
     public GameObject modal;
+    public BlockAdviceButtons BlockAdviceButtons;
     
     private GameObject[][] matrix;
     private int _specialX = 1;
@@ -43,7 +44,7 @@ public class EquipmentScript : MonoBehaviour, PostInit
     public void PostInit()
     {
         _rectTransform = selector.GetComponent<RectTransform>();
-        MoveSelector(_pointerX, _pointerY);
+        //MoveSelector(_pointerX, _pointerY);
     }
 
 
@@ -102,6 +103,11 @@ public class EquipmentScript : MonoBehaviour, PostInit
     void OnEnter()
     {
         if (_modalScript.IsActive()) return;
+        List<BlockAdviceButtons.AdviceType> adviceTypes = new List<BlockAdviceButtons.AdviceType>();
+        adviceTypes.Add(BlockAdviceButtons.AdviceType.SELECT);
+        adviceTypes.Add(BlockAdviceButtons.AdviceType.ENTER);
+        adviceTypes.Add(BlockAdviceButtons.AdviceType.BACK);
+        BlockAdviceButtons.ShowAdvice(adviceTypes);
         modal.SetActive(true);
         _modalScript.Activate();
     }
