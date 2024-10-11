@@ -50,9 +50,7 @@ public class MenuSwitcher : MonoBehaviour
             var itemPosition = menuItem.transform.position.x;
             var selectorPosition = _rectTransform.position.x;
             var menuItemPositionDiff = itemPosition - selectorPosition;
-
             ChangeItemColors(menuItem);
-
             StartCoroutine(MoveSelector(menuItemPositionDiff));
             currentItem--; // Обновление текущего элемента
         }
