@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -21,7 +22,11 @@ public class CharacterMovement : MonoBehaviour
     
     // Update iCharacterMovement ms called once per frame
     void Update() {
-        UseGravity(gravitySpeed);
+        if (!characterController.isGrounded)
+        {
+            UseGravity(gravitySpeed);
+        }
+
         var horizontal = Input.GetAxisRaw("Horizontal");
         var vertical = Input.GetAxisRaw("Vertical");
         var inputDirection  = new Vector3(horizontal, 0, vertical).normalized;
