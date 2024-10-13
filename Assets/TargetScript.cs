@@ -6,8 +6,10 @@ using UnityEngine;
 public class TargetScript : MonoBehaviour
 {
 
-    private Animator _animator;
     public Camera mainCamera;
+    public GameObject pointer;
+    
+    private Animator _animator;
     private GameObject _target;
 
     private bool _isLocked = false;
@@ -15,6 +17,8 @@ public class TargetScript : MonoBehaviour
     void Start()
     {
         _animator = GetComponent<Animator>();
+        pointer = Instantiate(pointer);
+        pointer.SetActive(false);         
     }
 
     // Update is called once per frame
@@ -22,12 +26,31 @@ public class TargetScript : MonoBehaviour
     {
     }
     
+    private void TakeTarget(Transform nearestObject)
+    {
+        _isLocked = true;
+        var virtualCamera = transform.Find("Target Locking Camera").GetComponent<CinemachineVirtualCamera>();
+        virtualCamera.LookAt = nearestObject;
+        _target = nearestObject.gameObject;
+        pointer.SetActive(true);
+        var renderer = nearestObject.GetComponent<SkinnedMeshRenderer>();
+        if (renderer != null)
+        {
+            var center = renderer.bounds.center;
+            var max = renderer.bounds.max;
+            var half = max.y - center.y;
+            center.y = max.y - half / 2;
+            pointer.transform.position = center;
+            virtualCamera.LookAt = pointer.transform;
+        }
+    }
 
     void OnTargetLock()
     {
         if (_isLocked)
         {
             _isLocked = false;
+            pointer.SetActive(false);
             FollowCamera();
         }
         else
@@ -37,12 +60,9 @@ public class TargetScript : MonoBehaviour
                 .ToList();
             var nearestObject = FindNearestObject(objects, Vector3.right);
             
-            var name = nearestObject.gameObject.name;
-            Debug.Log("Neareset object is " + name);
-            _isLocked = true;
-            var virtualCamera = transform.Find("Target Locking Camera").GetComponent<CinemachineVirtualCamera>();
-            virtualCamera.LookAt = nearestObject;
-            _target = nearestObject.gameObject;
+            if (nearestObject == null) return;
+            
+            TakeTarget(nearestObject);
             TargetCamera();
         }
     }
@@ -71,9 +91,7 @@ public class TargetScript : MonoBehaviour
         // Если нашли ближайшую цель, устанавливаем её как текущую
         if (closestTarget != null)
         {
-            _target = closestTarget.gameObject;
-            var virtualCamera = transform.Find("Target Locking Camera").GetComponent<CinemachineVirtualCamera>();
-            virtualCamera.LookAt = closestTarget;
+            TakeTarget(closestTarget);
         }
     }
 
