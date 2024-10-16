@@ -24,6 +24,15 @@ public class TargetScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (_isLocked && _target != null)
+        {
+            var renderer = _target.GetComponent<Renderer>();
+            var center = renderer.bounds.center;
+            var max = renderer.bounds.max;
+            var half = max.y - center.y;
+            center.y = max.y - half / 2;
+            pointer.transform.position = center;
+        }
     }
     
     private void TakeTarget(Transform nearestObject)
@@ -50,6 +59,7 @@ public class TargetScript : MonoBehaviour
         if (_isLocked)
         {
             _isLocked = false;
+            _target = null;
             pointer.SetActive(false);
             FollowCamera();
         }
@@ -58,12 +68,36 @@ public class TargetScript : MonoBehaviour
             var objects = FindObjectsInView()
                 .Select(obj => obj.transform)
                 .ToList();
-            var nearestObject = FindNearestObject(objects, Vector3.right);
+            var nearestObject = FindNearestObject(objects);
             
             if (nearestObject == null) return;
             
             TakeTarget(nearestObject);
             TargetCamera();
+        }
+    }
+
+    public void FindAnotherTarget(EnemyScript enemyScript)
+    {
+        if (_target == null) return;
+        if (!_target.GetComponentInParent<EnemyScript>().Equals(enemyScript)) return;
+        
+        var objects = FindObjectsInView()
+            .Select(obj => obj.transform)
+            .ToList();
+        var nearestObject = FindNearestObject(objects);
+
+        if (nearestObject == null)
+        {
+            _target = null;
+            _isLocked = false;
+            pointer.SetActive(false);
+            FollowCamera();
+        }
+        else
+        {
+            TakeTarget(nearestObject);
+            TargetCamera();   
         }
     }
 
@@ -86,7 +120,7 @@ public class TargetScript : MonoBehaviour
             .Select(obj => obj.transform)
             .Where(transform => positionFilter(transform, direction))
             .ToList();
-        Transform closestTarget = FindNearestObject(targets, direction);
+        Transform closestTarget = FindNearestObject(targets);
 
         // Если нашли ближайшую цель, устанавливаем её как текущую
         if (closestTarget != null)
@@ -110,7 +144,7 @@ public class TargetScript : MonoBehaviour
         return direction == Vector3.right && crossVector.y > 0 || direction == Vector3.left && crossVector.y < 0;
     }
     
-    private Transform FindNearestObject(List<Transform> objects, Vector3 inputDirection)
+    private Transform FindNearestObject(List<Transform> objects)
     {
         Transform nearestObject = null;
         var smallestAngle = Mathf.Infinity;  // Минимальный угол между направлением камеры и объектом
@@ -145,6 +179,7 @@ public class TargetScript : MonoBehaviour
 
         return (from obj in allObjects 
             where obj.CompareTag("Enemy") 
+            where obj.GetComponentInParent<EnemyScript>().health > 0
             let objRenderer = obj.GetComponent<Renderer>() 
             where objRenderer != null 
             where GeometryUtility.TestPlanesAABB(frustumPlanes, objRenderer.bounds) 

@@ -43,7 +43,7 @@ public class CombatScript : MonoBehaviour
             Destroy(child);
         }
         _weapon = Instantiate(gameObject, rightSocket.transform);
-        _weapon.tag = "Player";
+        _weapon.tag = "Weapon";
         var collider = _weapon.GetComponent<MeshCollider>();
         collider.convex = true;
         collider.isTrigger = true;
