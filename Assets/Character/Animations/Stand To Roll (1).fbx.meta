@@ -43,7 +43,7 @@ ModelImporter:
       name: Roll2
       takeName: mixamo.com
       internalID: -203655887218126122
-      firstFrame: 0
+      firstFrame: 0.5
       lastFrame: 71
       wrapMode: 0
       orientationOffsetY: 0
@@ -63,7 +63,28 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.0776699
+        functionName: OnRollingStart
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: a5a2699bd9a2c8647956d14b72c619e7, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.7839806
+        functionName: OnRollingContinue
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: a5a2699bd9a2c8647956d14b72c619e7, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.92263365
+        functionName: OnRollingStop
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: a5a2699bd9a2c8647956d14b72c619e7, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}

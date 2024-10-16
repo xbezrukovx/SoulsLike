@@ -4907,7 +4907,7 @@ Transform:
   m_GameObject: {fileID: 924682872}
   serializedVersion: 2
   m_LocalRotation: {x: -0.038313724, y: -0.36308026, z: 0.04678767, w: -0.92979336}
-  m_LocalPosition: {x: -1.1965644, y: 0.3209045, z: -1.8965693}
+  m_LocalPosition: {x: -1.8470331, y: 0.5023693, z: -2.6911824}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5389,6 +5389,7 @@ GameObject:
   - component: {fileID: 1138971360}
   - component: {fileID: 1138971361}
   - component: {fileID: 1138971362}
+  - component: {fileID: 1138971363}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -5530,6 +5531,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1138971363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1138971349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5a2699bd9a2c8647956d14b72c619e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1263316893
 GameObject:
   m_ObjectHideFlags: 3
@@ -5760,7 +5773,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ad980451443d70438faac0bc6c235a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TrackedObjectOffset: {x: 0, y: 0.5, z: 0}
+  m_TrackedObjectOffset: {x: 0, y: 0.6, z: 0}
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
@@ -5770,7 +5783,7 @@ MonoBehaviour:
   m_TargetMovementOnly: 1
   m_ScreenX: 0.5
   m_ScreenY: 0.5
-  m_CameraDistance: 2
+  m_CameraDistance: 3
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
   m_DeadZoneDepth: 0

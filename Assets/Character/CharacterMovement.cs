@@ -42,11 +42,6 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    void OnBack()
-    {
-        animator.SetTrigger("Roll");
-    }
-
     public void DisableMovement()
     {
         isMovementEnalbed = false;
