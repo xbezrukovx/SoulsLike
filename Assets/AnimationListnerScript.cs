@@ -30,7 +30,6 @@ public class AnimationListnerScript : MonoBehaviour
 
     public void OnRollingStart()
     {
-        Debug.Log("RollingStart");
         _characterMovement.DisableMovement();
         _isRolling = true;
     }
@@ -43,7 +42,6 @@ public class AnimationListnerScript : MonoBehaviour
 
     public void OnRollingStop()
     {
-        
     }
     
     void OnBack()
