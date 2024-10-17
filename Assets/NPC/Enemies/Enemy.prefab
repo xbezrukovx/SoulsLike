@@ -50,8 +50,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80a08337ebb01d84facc957e9fae93a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _range: 100
+  chasingRange: 4
+  agroRange: 2
   health: 100
+  isDebug: 0
 --- !u!95 &1536515717029977430
 Animator:
   serializedVersion: 5

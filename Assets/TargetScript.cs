@@ -179,7 +179,7 @@ public class TargetScript : MonoBehaviour
 
         return (from obj in allObjects 
             where obj.CompareTag("Enemy") 
-            where obj.GetComponentInParent<EnemyScript>().health > 0
+            where obj.GetComponentInParent<EnemyScript>().Health > 0
             let objRenderer = obj.GetComponent<Renderer>() 
             where objRenderer != null 
             where GeometryUtility.TestPlanesAABB(frustumPlanes, objRenderer.bounds) 

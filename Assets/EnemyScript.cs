@@ -4,19 +4,26 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 public class EnemyScript : MonoBehaviour
 {
-    [SerializeField] private float _range = 100f; 
-    
-    private int _maxHealth;
+    [SerializeField] private float chasingRange = 10f;
+    [SerializeField] private float agroRange = 5f;
+    [SerializeField] private int health = 100;
+    [SerializeField] private bool isDebug = false;
+
     private Animator _animator;
     private HealthBarScript _healthBar;
     private NavMeshAgent _agent;
     private GameObject _player;
+
+    private Vector3 _awakePosition;
+    private Quaternion _awakeRotation;
     
-    public int health = 100;
-    
+    private int _maxHealth;
+    private bool _isAggressive;
+
     void Awake()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
@@ -24,6 +31,8 @@ public class EnemyScript : MonoBehaviour
         _maxHealth = health;
         _animator = GetComponent<Animator>();
         _healthBar = GetComponentInChildren<HealthBarScript>();
+        _awakePosition = gameObject.transform.position;
+        _awakeRotation = gameObject.transform.rotation;
     }
     
     // Start is called before the first frame update
@@ -41,22 +50,32 @@ public class EnemyScript : MonoBehaviour
         var distance = Vector3.Distance(source, destination);
         
         _animator.SetFloat("speed", _agent.velocity.magnitude / _agent.speed);
+        if (distance < agroRange)
+        {
+            _isAggressive = true;
+        }
 
-        if (distance <= _range && health > 0)
+        if (distance > chasingRange)
+        {
+            _isAggressive = false;
+            _agent.destination = _awakePosition;
+        }
+        
+        if (_isAggressive)
         {
             var look = _player.transform.position;
             look.y = transform.position.y;
             GetComponent<Rigidbody>().transform.LookAt(look);
-        }
-
-        if (distance >= 2.5f && distance <= _range && health > 0)
-        {
             _animator.SetBool("isCombat", true);
             _agent.destination = destination;
         }
-        else
+        
+        var distanceToAwake = Vector3.Distance(source, _awakePosition);
+        
+        if (_agent.velocity.magnitude <= 0f && !_isAggressive && distanceToAwake < 2f)
         {
-            _animator.SetFloat("speed", 0f);
+            _animator.SetBool("isCombat", false);
+            transform.rotation = _awakeRotation;
         }
     }
 
@@ -90,8 +109,8 @@ public class EnemyScript : MonoBehaviour
         _animator.SetTrigger("Die");
     }
 
-    private void FollowToTarget()
+    public int Health
     {
-        
+        get { return health; }
     }
 }
