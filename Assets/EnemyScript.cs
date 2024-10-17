@@ -12,6 +12,7 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] private float agroRange = 5f;
     [SerializeField] private int health = 100;
     [SerializeField] private bool isDebug = false;
+    [SerializeField] private float attackRange = 3f;
 
     private Animator _animator;
     private HealthBarScript _healthBar;
@@ -23,6 +24,7 @@ public class EnemyScript : MonoBehaviour
     
     private int _maxHealth;
     private bool _isAggressive;
+    private bool _isMovementBlocked;
 
     void Awake()
     {
@@ -55,28 +57,47 @@ public class EnemyScript : MonoBehaviour
             _isAggressive = true;
         }
 
-        if (distance > chasingRange)
+        if (distance > chasingRange && !_isMovementBlocked)
         {
             _isAggressive = false;
             _agent.destination = _awakePosition;
         }
         
+        if (_isAggressive && !_isMovementBlocked)
+        {
+            _agent.destination = destination;
+        }
+
         if (_isAggressive)
         {
             var look = _player.transform.position;
             look.y = transform.position.y;
-            GetComponent<Rigidbody>().transform.LookAt(look);
             _animator.SetBool("isCombat", true);
-            _agent.destination = destination;
+            GetComponent<Rigidbody>().transform.LookAt(look);
+        }
+
+        if (_isAggressive && _agent.velocity.magnitude <= 0.1f && distance < attackRange && health > 0)
+        {
+            _animator.SetTrigger("Slash");
         }
         
         var distanceToAwake = Vector3.Distance(source, _awakePosition);
         
-        if (_agent.velocity.magnitude <= 0f && !_isAggressive && distanceToAwake < 2f)
+        if (_agent.velocity.magnitude <= 0f && !_isAggressive && distanceToAwake < 2f && !_isMovementBlocked)
         {
             _animator.SetBool("isCombat", false);
             transform.rotation = _awakeRotation;
         }
+    }
+
+    public void OnAttackStart()
+    {
+        _isMovementBlocked = true;
+    }
+
+    public void OnAttackEnd()
+    {
+        _isMovementBlocked = false;
     }
 
     private void OnTriggerEnter(Collider other)
