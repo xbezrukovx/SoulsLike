@@ -46,6 +46,7 @@ public class EnemyScript : MonoBehaviour
     void Update()
     {
         if (health <= 0) return;
+        if (Input.GetKeyDown(KeyCode.Space)) Die();
         
         var source = transform.position;
         var destination = _player.transform.position;
@@ -126,8 +127,9 @@ public class EnemyScript : MonoBehaviour
 
     void Die()
     {
+        health = 0;
         _healthBar.gameObject.SetActive(false);
-        _animator.SetTrigger("Die");
+        _animator.enabled = false;
     }
 
     public int Health
