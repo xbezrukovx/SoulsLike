@@ -31,7 +31,23 @@ public class TargetScript : MonoBehaviour
             var max = renderer.bounds.max;
             var half = max.y - center.y;
             center.y = max.y - half / 2;
-            pointer.transform.position = center;
+
+            // Определяем текущее расстояние до целевой позиции
+            float distance = Vector3.Distance(pointer.transform.position, center);
+
+            // Пороговое значение расстояния
+            float threshold = 0.5f; // Можно настроить в зависимости от требований
+
+            if (distance < threshold)
+            {
+                // Плавное перемещение, если расстояние меньше порога
+                pointer.transform.position = Vector3.Lerp(pointer.transform.position, center, Time.deltaTime * 10f);
+            }
+            else
+            {
+                // Мгновенное перемещение, если расстояние больше порога
+                pointer.transform.position = center;
+            }
         }
     }
     

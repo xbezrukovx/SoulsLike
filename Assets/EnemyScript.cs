@@ -13,6 +13,7 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] private int health = 100;
     [SerializeField] private bool isDebug = false;
     [SerializeField] private float attackRange = 3f;
+    [SerializeField] private float rotationSpeed = 5f;
 
     private Animator _animator;
     private HealthBarScript _healthBar;
@@ -67,18 +68,30 @@ public class EnemyScript : MonoBehaviour
         if (_isAggressive && !_isMovementBlocked)
         {
             _agent.destination = destination;
+            var look = _player.transform.position;
+            look.y = transform.position.y;
+            var targetRotation = Quaternion.LookRotation(look - transform.position);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+
+        if (_isMovementBlocked && _isAggressive)
+        {
+            _agent.destination = source;
         }
 
         if (_isAggressive)
         {
-            var look = _player.transform.position;
-            look.y = transform.position.y;
             _animator.SetBool("isCombat", true);
-            GetComponent<Rigidbody>().transform.LookAt(look);
         }
 
-        if (_isAggressive && _agent.velocity.magnitude <= 0.1f && distance < attackRange && health > 0)
+        // Атакуем 
+        Vector3 directionToTarget = destination - transform.position;
+        var angle = Vector3.Angle(transform.forward, directionToTarget);
+        if (_isAggressive && _agent.velocity.magnitude <= 0.1f && distance < attackRange && health > 0 && angle < 55 && !_isMovementBlocked)
         {
+            var look = _player.transform.position;
+            look.y = transform.position.y;
+            GetComponent<Rigidbody>().transform.LookAt(look);
             _animator.SetTrigger("Slash");
         }
         
